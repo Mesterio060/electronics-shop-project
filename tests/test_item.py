@@ -25,9 +25,11 @@ def test_apply_discount():
 
     assert test_item4.price == 50000.0
 
+
 def test_name():
     Item.name = 'Игра-Кот'
     assert Item.name == 'Игра-Кот'
+
 
 @pytest.fixture
 def item():
@@ -35,18 +37,35 @@ def item():
     item = Item(name="Игра-Динозавр", price=1200, quantity=25)
     return item
 
+
 def test_all_items_list(item):
     assert len(Item.all) == 1
     assert Item.all[0] == item
+
 
 def test_len_name(item):
     with pytest.raises(Exception) as e:
         item.name = "Игра-Динозавр"
         assert str(e.value) == "Длина наименования товара превышает 10 символов"
+
+
 def test_len_name2(item):
     item.name = "Телевизор"
     assert item.name == "Телевизор"
+
+
 def test_instantiate_from_csv(item):
     Item.instantiate_from_csv()
     assert len(Item.all) == 5
     assert isinstance(Item.all[0], Item)
+
+
+def test_repr_and_str(item):
+    # Создаем экземпляр класса для проверки магических методов
+    item = Item("Телевизор", 45000, 12)
+
+    # Проверяем магический метод __repr__
+    assert repr(item) == "Item('Телевизор', 45000, 12)"
+
+    # Проверяем магический метод __str__
+    assert str(item) == 'Телевизор'
