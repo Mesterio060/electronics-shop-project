@@ -1,5 +1,6 @@
 import csv
 import math
+import os
 
 
 class Item:
@@ -20,6 +21,19 @@ class Item:
         self.name = name
         self.price = price
         self.quantity = quantity
+
+        Item.all.append(self)
+
+    def __repr__(self):
+        return f"{self.__class__.__name__}('{self.name}', {self.price}, {self.quantity})"
+
+    def __str__(self):
+        return f'{self.name}'
+
+    def __add__(self, other):
+        if not isinstance(other, Item):
+            raise ValueError('Нельзя складывать')
+        return int(self.quantity) + int(other.quantity)
 
     def calculate_total_price(self) -> float:
         """
@@ -43,34 +57,32 @@ class Item:
 
     @name.setter
     def name(self, newname):
-        try:
-            if len(newname) <= 10:
-                self._name = newname
-        except Exception:
-            raise Exception("Длина наименования товара превышает 10 символов")
+        if len(newname) <= 10:
+            self._name = newname
+        else:
+            raise Exception("Длина наименования товара больше 10 симвовов")
 
     @classmethod
     def instantiate_from_csv(cls) -> None:
         """
-        Инициализирует экземпляры класса Item данными из файла src/items.csv.
+        Класс-метод, инициализирует экземпляры класса Item данными из файла src/items.csv.
         """
         cls.all = []
-        with open('C:/Users/79538/PycharmProjects/electronics-shop-project/src/items.csv', 'r') as file:
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        data = os.path.join(current_dir, 'items.csv')
+        with open(data, 'r') as file:
             csv_reader = csv.DictReader(file)
             for row in csv_reader:
                 name = row['name']
                 price = float(row['price'])
                 quantity = int(row['quantity'])
-                item = Item(name, price, quantity)
-                cls.all.append(item)
-
-    def __repr__(self) -> str:
-        """
-        Возвращает строковое представление экземпляра класса Item
-        """
-        return f"Item(name='{self._name}', price='{self.price}', quantity='{self.quantity}')"
+                cls(name, price, quantity)
 
     @staticmethod
     def string_to_number(num):
         number = int(math.floor(float(num.strip())))
         return number
+
+    @name.setter
+    def name(self, value):
+        self._name = value
