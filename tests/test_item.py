@@ -2,6 +2,7 @@
 import pytest
 
 from src.item import Item
+from src.phone import Phone
 
 
 def test_Item():
@@ -69,3 +70,24 @@ def test_repr_and_str(item):
 
     # Проверяем магический метод __str__
     assert str(item) == 'Телевизор'
+
+
+def test_Phone():
+
+    # Проверяем новый класс
+    phone1 = Phone("iPhone 14", 120000, 12, 2)
+    # Проверяем методы
+    assert str(phone1) == 'iPhone 14'
+    assert repr(phone1) == "Phone('iPhone 14', 120000, 12, 2)"
+    assert phone1.number_of_sim == 2
+
+    # Еще один класс для проверки
+    item1 = Item("Смартфон", 10000, 10)
+    # Проверяем сложение - правильно
+    assert item1 + phone1 == 22
+    # Проверяем сложение - нельзя складывать
+    assert phone1 + phone1 == 24
+
+    with pytest.raises(ValueError):
+        phone1.number_of_sim = 0
+
